@@ -1,0 +1,72 @@
+tools 
+REQ-HappensBefore
+REQ-FastTrack
+-FastTrack_CAS
+REQ-Atomizer
+REQ-LockSet
+REQ-ReadShared
+REQ-ProtectingLock
+REQ-EraserWithBarriers
+
+-ReplayLog
+-Print
+-Empty
+-Count
+-Sync
+-Timer
+-ThreadLocal
+
+options
+-javaArgs	
+-noDecInline	TF
+-quiet		TF
+-logs		log
+-out
+-err
+-noinst		TF
+-inst		INST
+-infThreads	#
+-args		[]
+-d		[]
+-toolpath	paths
+REQ-classpath	paths
+-tool		tool
+-tools		TF
+-noxml		TF
+-constantGC	TF
+-noFP		TF
+-noEnter	TF
+-xml		log.xml
+-pulse		
+-maxTime	#
+-maxMem		#
+OPT-maxTid		#
+-stacks		TF
+-values		TF
+-noTidGC	TF
+-noEventReuse	TF
+-repository
+-meta		null
+-methods	[]
+-fields		[]
+-lines		[]
+-classes	[]
+-shadowThread	[]
+-noop		[]
+-noConstructor	TF
+-noClone	TF
+-dump		
+-field		FINE/COARSE
+-fancy		TF
+-arraySites	TF
+-nonAtomicVolatile	TF
+-Use TestAquires	TF
+-nojoin		TF
+-multiLoader	TF
+-indices	#
+-updaters	SAFE/UNSAFE
+REQ-array		NONE/FINE/COARSE/SPECIAL
+REQ-nobarrier	TF
+-noArrayLookupOpt	TF
+-callSites	TF
+-maxWarn	#
