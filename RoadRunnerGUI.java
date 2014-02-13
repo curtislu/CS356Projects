@@ -8,13 +8,15 @@ import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
 class RoadRunnerGUI implements ActionListener {
+
 	GridBagConstraints gbc = new GridBagConstraints();
 	JButton jbtnOut, jbtnRun, jbtnSelect;
-	JCheckBox[] jcb = new JCheckBox[18];
+	JCheckBox[] jcb = new JCheckBox[17];
 	JFileChooser jfc = new JFileChooser();
 	JFrame jfrm = new JFrame("RoadRunner Dynamic Analysis Framework");
 	JLabel jlab = new JLabel("No file selected.");
 	JMenuBar jmb = new JMenuBar();
+	JMenuItem jmiRun, jmiOut;
 	JPanel jpnl1, jpnl2, jpnl3, jpnl4;
 
 	RoadRunnerGUI() {
@@ -30,15 +32,17 @@ class RoadRunnerGUI implements ActionListener {
 		JMenu jmFile = new JMenu("File");
 		JMenuItem jmiSelect = new JMenuItem("Select Java File...", KeyEvent.VK_S);
 		jmiSelect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
-		JMenuItem jmiRun = new JMenuItem("Run Program", KeyEvent.VK_P);
+		jmiRun = new JMenuItem("Run Program", KeyEvent.VK_P);
 		jmiRun.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
-		JMenuItem jmiOutput = new JMenuItem("Output File", KeyEvent.VK_O);
-		jmiOutput.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.ALT_MASK));
+		jmiRun.setEnabled(false);
+		jmiOut = new JMenuItem("Output File", KeyEvent.VK_O);
+		jmiOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.ALT_MASK));
+		jmiOut.setEnabled(false);
 		JMenuItem jmiExit = new JMenuItem("Exit", KeyEvent.VK_E);
 		jmiExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_MASK));
 		jmFile.add(jmiSelect);
 		jmFile.add(jmiRun);
-		jmFile.add(jmiOutput);
+		jmFile.add(jmiOut);
 		jmFile.addSeparator();
 		jmFile.add(jmiExit);
 		jmb.add(jmFile);
@@ -89,7 +93,7 @@ class RoadRunnerGUI implements ActionListener {
 
 		jmiSelect.addActionListener(this);
 		jmiRun.addActionListener(this);
-		jmiOutput.addActionListener(this);
+		jmiOut.addActionListener(this);
 		jmiExit.addActionListener(this);
 		jmiReset.addActionListener(this);
 		jmiDoc.addActionListener(this);
@@ -100,15 +104,14 @@ class RoadRunnerGUI implements ActionListener {
 		jpnl1.setLayout(new GridLayout(4, 2));
 		jpnl1.setBorder(BorderFactory.createTitledBorder("Tools"));
 		jpnl1.setOpaque(true);
-		jcb[0] = new JCheckBox("Tool 1");
-		jcb[1] = new JCheckBox("Tool 2");
-		jcb[2] = new JCheckBox("Tool 3");
-		jcb[3] = new JCheckBox("Tool 4");
-		jcb[4] = new JCheckBox("Tool 5");
-		jcb[5] = new JCheckBox("Tool 6");
-		jcb[6] = new JCheckBox("Tool 7");
-		jcb[7] = new JCheckBox("Tool 8");
-		for (int i = 0; i < 8; i++) {
+		jcb[0] = new JCheckBox("Atomizer");
+		jcb[1] = new JCheckBox("BarrierEraser");
+		jcb[2] = new JCheckBox("FastTrack");
+		jcb[3] = new JCheckBox("HappensBefore");
+		jcb[4] = new JCheckBox("LockSet");
+		jcb[5] = new JCheckBox("ProtectingLock");
+		jcb[6] = new JCheckBox("ReadShared");
+		for (int i = 0; i < 7; i++) {
 			jcb[i].addActionListener(this);
 			jpnl1.add(jcb[i]);
 		}
@@ -118,17 +121,17 @@ class RoadRunnerGUI implements ActionListener {
 		jpnl2.setLayout(new GridLayout(5, 2));
 		jpnl2.setBorder(BorderFactory.createTitledBorder("Options"));
 		jpnl2.setOpaque(true);
-		jcb[8] = new JCheckBox("Option 1");
-		jcb[9] = new JCheckBox("Option 2");
-		jcb[10] = new JCheckBox("Option 3");
-		jcb[11] = new JCheckBox("Option 4");
-		jcb[12] = new JCheckBox("Option 5");
-		jcb[13] = new JCheckBox("Option 6");
-		jcb[14] = new JCheckBox("Option 7");
-		jcb[15] = new JCheckBox("Option 8");
-		jcb[16] = new JCheckBox("Option 9");
-		jcb[17] = new JCheckBox("Option 10");
-		for (int i = 8; i < 18; i++) {
+		jcb[7] = new JCheckBox("Option 1");
+		jcb[8] = new JCheckBox("Option 2");
+		jcb[9] = new JCheckBox("Option 3");
+		jcb[10] = new JCheckBox("Option 4");
+		jcb[11] = new JCheckBox("Option 5");
+		jcb[12] = new JCheckBox("Option 6");
+		jcb[13] = new JCheckBox("Option 7");
+		jcb[14] = new JCheckBox("Option 8");
+		jcb[15] = new JCheckBox("Option 9");
+		jcb[16] = new JCheckBox("Option 10");
+		for (int i = 7; i < 17; i++) {
 			jcb[i].addActionListener(this);
 			jpnl2.add(jcb[i]);
 		}
@@ -147,7 +150,6 @@ class RoadRunnerGUI implements ActionListener {
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		jpnl3.add(jlab, gbc);
-		
 
 		// Button grid
 		jpnl4 = new JPanel();
@@ -183,7 +185,9 @@ class RoadRunnerGUI implements ActionListener {
 
 			if (result == JFileChooser.APPROVE_OPTION) {
 				jlab.setText("Selected file is: " + jfc.getSelectedFile().getName());
+				jmiRun.setEnabled(true);
 				jbtnRun.setEnabled(true);
+				jmiOut.setEnabled(true);
 				jbtnOut.setEnabled(true);
 			} else {
 				jlab.setText("No file selected.");
@@ -194,8 +198,21 @@ class RoadRunnerGUI implements ActionListener {
 			System.exit(0);
 		}
 
+		if (comStr.equals("Reset")) {
+			for (int i = 0; i < 17; i++) {
+				jcb[i].setSelected(false);
+			}
+			
+			jlab.setText("No file selected.");
+			jmiRun.setEnabled(false);
+			jbtnRun.setEnabled(false);
+			jmiOut.setEnabled(false);
+			jbtnOut.setEnabled(false);
+		}
+
 		if (comStr.equals("Documentation")) {
 			try {
+				// Change path to pdf according to laptop.
 				Process p = Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler C:\\Users\\Danny\\Documents\\NetBeansProjects\\RoadrunnerGUI\\RDAF.pdf");
 				p.waitFor();
 			} catch (Exception error) {
@@ -234,7 +251,7 @@ class JavaFileFilter extends FileFilter {
 		if (file.getName().endsWith(".java")) {
 			return true;
 		}
-		
+
 		if (file.isDirectory()) {
 			return true;
 		}
