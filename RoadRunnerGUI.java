@@ -7,89 +7,66 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
-class RoadRunnerGUI implements ActionListener {
+class RoadRunnerGUI implements ActionListener, ItemListener {
 
 	GridBagConstraints gbc = new GridBagConstraints();
 	JButton jbtnOut, jbtnReset, jbtnRun, jbtnSelect;
-	JCheckBox[] jcb = new JCheckBox[11];
-	JFileChooser jfc = new JFileChooser();
-	JFrame jfrm = new JFrame("RoadRunner Dynamic Analysis Framework - GUI");
-	JLabel jlab = new JLabel("No file selected.");
-	JMenuBar jmb = new JMenuBar();
-	JMenuItem jmiRun, jmiOut;
+	JCheckBox[] jcb;
+	JFileChooser jfc;
+	JFrame jfrm;
+	JLabel jlab;
+	JMenu jmFile, jmHelp, jmTool;
+	JMenuBar jmb;
+	JMenuItem jmiAbout, jmiDoc, jmiExit, jmiGet, jmiOut, jmiReset, jmiRun, jmiSelect;
 	JPanel jpnl1, jpnl2, jpnl3, jpnlBot, jpnlTop;
+	JScrollPane jsp;
+	JTextArea jta;
 
 	RoadRunnerGUI() {
 		// Frame configurations
+		jfrm = new JFrame("RoadRunner Dynamic Analysis Framework - GUI");
 		jfrm.setSize(750, 500);
 		jfrm.getContentPane().setLayout(new GridLayout(2, 1));
 		jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jfrm.setLocationRelativeTo(null);
 		jfrm.setVisible(true);
+		
+		// Other variable declarations
+		jcb = new JCheckBox[11];
+		jfc = new JFileChooser();
 		jfc.setFileFilter(new JavaFileFilter());
+		jmb = new JMenuBar();
 
 		// Menubar - File
-		JMenu jmFile = new JMenu("File");
-		JMenuItem jmiSelect = new JMenuItem("Select Java File...", KeyEvent.VK_S);
+		jmFile = new JMenu("File");
+		jmiSelect = new JMenuItem("Select Java File...", KeyEvent.VK_S);
 		jmiSelect.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK));
-		jmiRun = new JMenuItem("Run Program", KeyEvent.VK_P);
-		jmiRun.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
+		jmiRun = new JMenuItem("Run Program", KeyEvent.VK_R);
+		jmiRun.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
 		jmiRun.setEnabled(false);
 		jmiOut = new JMenuItem("Output File", KeyEvent.VK_O);
 		jmiOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.ALT_MASK));
 		jmiOut.setEnabled(false);
-		JMenuItem jmiExit = new JMenuItem("Exit", KeyEvent.VK_E);
+		jmiReset = new JMenuItem("Reset GUI", KeyEvent.VK_G);
+		jmiReset.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.ALT_MASK));
+		jmiExit = new JMenuItem("Exit", KeyEvent.VK_E);
 		jmiExit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_MASK));
 		jmFile.add(jmiSelect);
 		jmFile.add(jmiRun);
 		jmFile.add(jmiOut);
 		jmFile.addSeparator();
+		jmFile.add(jmiReset);
+		jmFile.addSeparator();
 		jmFile.add(jmiExit);
 		jmb.add(jmFile);
 
-		// Menubar - Preferences
-		JMenu jmPref = new JMenu("Preferences");
-		// Submenu - Tools
-		JMenu jmTool = new JMenu("Tools");
-		JMenuItem tool1 = new JMenuItem("Atomizer");
-		JMenuItem tool2 = new JMenuItem("BarrierEraser");
-		JMenuItem tool3 = new JMenuItem("FastTrack");
-		JMenuItem tool4 = new JMenuItem("HappensBefore");
-		JMenuItem tool5 = new JMenuItem("LockSet");
-		JMenuItem tool6 = new JMenuItem("ProtectingLock");
-		JMenuItem tool7 = new JMenuItem("ReadShared");
-		jmTool.add(tool1);
-		jmTool.add(tool2);
-		jmTool.add(tool3);
-		jmTool.add(tool4);
-		jmTool.add(tool5);
-		jmTool.add(tool6);
-		jmTool.add(tool7);
-		// Submenu - Options
-		JMenu jmOpt = new JMenu("Options");
-		JMenuItem opt1 = new JMenuItem("Array");
-		JMenuItem opt2 = new JMenuItem("Classpath");
-		JMenuItem opt3 = new JMenuItem("MaxTID");
-		JMenuItem opt4 = new JMenuItem("NoBarrier");
-		jmOpt.add(opt1);
-		jmOpt.add(opt2);
-		jmOpt.add(opt3);
-		jmOpt.add(opt4);
-		JMenuItem jmiReset = new JMenuItem("Reset GUI", KeyEvent.VK_R);
-		jmiReset.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
-		jmPref.add(jmTool);
-		jmPref.add(jmOpt);
-		jmPref.addSeparator();
-		jmPref.add(jmiReset);
-		jmb.add(jmPref);
-
 		// Menubar - Help
-		JMenu jmHelp = new JMenu("Help");
-		JMenuItem jmiGet = new JMenuItem("Getting Started", KeyEvent.VK_G);
+		jmHelp = new JMenu("Help");
+		jmiGet = new JMenuItem("Getting Started", KeyEvent.VK_G);
 		jmiGet.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.ALT_MASK));
-		JMenuItem jmiDoc = new JMenuItem("Documentation", KeyEvent.VK_D);
+		jmiDoc = new JMenuItem("Documentation", KeyEvent.VK_D);
 		jmiDoc.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_MASK));
-		JMenuItem jmiAbout = new JMenuItem("About", KeyEvent.VK_A);
+		jmiAbout = new JMenuItem("About", KeyEvent.VK_A);
 		jmiAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_MASK));
 		jmHelp.add(jmiGet);
 		jmHelp.add(jmiDoc);
@@ -109,7 +86,7 @@ class RoadRunnerGUI implements ActionListener {
 		jpnlTop = new JPanel();
 		jpnlTop.setLayout(new GridLayout(1, 3));
 		jpnlTop.setOpaque(true);
-		
+
 		// Tool grid
 		jpnl1 = new JPanel();
 		jpnl1.setLayout(new GridLayout(4, 2));
@@ -123,7 +100,7 @@ class RoadRunnerGUI implements ActionListener {
 		jcb[5] = new JCheckBox("ProtectingLock");
 		jcb[6] = new JCheckBox("ReadShared");
 		for (int i = 0; i < 7; i++) {
-			jcb[i].addActionListener(this);
+			jcb[i].addItemListener(this);
 			jpnl1.add(jcb[i]);
 		}
 
@@ -137,7 +114,7 @@ class RoadRunnerGUI implements ActionListener {
 		jcb[9] = new JCheckBox("MaxTID");
 		jcb[10] = new JCheckBox("NoBarrier");
 		for (int i = 7; i < 11; i++) {
-			jcb[i].addActionListener(this);
+			jcb[i].addItemListener(this);
 			jpnl2.add(jcb[i]);
 		}
 
@@ -152,6 +129,7 @@ class RoadRunnerGUI implements ActionListener {
 		gbc.gridy = 0;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		jpnl3.add(jbtnSelect, gbc);
+		jlab = new JLabel("No file selected.");
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.insets = new Insets(10, 0, 0, 0);
@@ -177,13 +155,19 @@ class RoadRunnerGUI implements ActionListener {
 		gbc.gridy = 4;
 		gbc.insets = new Insets(0, 0, 0, 0);
 		jpnl3.add(jbtnReset, gbc);
-		
+
 		// Bottom panel
 		jpnlBot = new JPanel();
-		
+		jta = new JTextArea();
+		jta.setLineWrap(true);
+		jta.setWrapStyleWord(true);
+		jsp = new JScrollPane(jta);
+		jsp.setPreferredSize(new Dimension(720, 210));
+
 		jpnlTop.add(jpnl1);
 		jpnlTop.add(jpnl2);
 		jpnlTop.add(jpnl3);
+		jpnlBot.add(jsp);
 
 		jfrm.setJMenuBar(jmb);
 		jfrm.getContentPane().add(jpnlTop);
@@ -207,6 +191,14 @@ class RoadRunnerGUI implements ActionListener {
 			}
 		}
 
+		if (comStr.equals("Run Program")) {
+			// Code here
+		}
+
+		if (comStr.equals("Output File")) {
+			// Code here
+		}
+
 		if (comStr.equals("Exit")) {
 			System.exit(0);
 		}
@@ -215,14 +207,15 @@ class RoadRunnerGUI implements ActionListener {
 			for (int i = 0; i < 11; i++) {
 				jcb[i].setSelected(false);
 			}
-			
+
 			jlab.setText("No file selected.");
 			jmiRun.setEnabled(false);
 			jbtnRun.setEnabled(false);
 			jmiOut.setEnabled(false);
 			jbtnOut.setEnabled(false);
+			jta.setText("");
 		}
-		
+
 		if (comStr.equals("Getting Started")) {
 			JOptionPane.showMessageDialog(jfrm, "To use this GUI, simply follow the steps below: "
 					+ "\n\n\n"
@@ -263,6 +256,16 @@ class RoadRunnerGUI implements ActionListener {
 					"Credits", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+	
+	public void itemStateChanged(ItemEvent ie) {
+		JCheckBox cb = (JCheckBox) ie.getItem();
+		
+		if (ie.getStateChange() == ItemEvent.SELECTED) {
+			jta.append(cb.getText() + " was selected.\n");
+		} else {
+			jta.append(cb.getText() + " was unselected.\n");
+		}
+	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -274,7 +277,6 @@ class RoadRunnerGUI implements ActionListener {
 }
 
 class JavaFileFilter extends FileFilter {
-
 	public boolean accept(File file) {
 		if (file.getName().endsWith(".java")) {
 			return true;
