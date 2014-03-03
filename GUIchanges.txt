@@ -1,5 +1,0 @@
-For options tab:
-Change Array from a checkbox to a drop down menu with "NONE", "SPECIAL", "FINE", "COARSE"
-Remove maxTid option
-Create new field, "# of Threads" to read user input
-Remove classpath option
