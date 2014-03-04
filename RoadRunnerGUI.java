@@ -12,11 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 class RoadRunnerGUI implements ActionListener, ItemListener {
-<<<<<<< HEAD
 	boolean[] selected = new boolean[12];
-=======
-	boolean[] selected = new boolean[7];
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 	GridBagConstraints gbc = new GridBagConstraints();
 	JButton jbtnOut, jbtnReset, jbtnRun, jbtnSelect;
 	JCheckBox[] jcb;
@@ -29,11 +25,7 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 	JPanel jpnl1, jpnl2, jpnl3, jpnlBot, jpnlTop;
 	JScrollPane jsp;
 	JTextArea jta;
-<<<<<<< HEAD
 	String command = "-tool=", output = "", path = "-classpath=", response = "", array = "", noBarrier = "", numThreads = "";
-=======
-	String command = "-tool=", output = "", path = "-classpath=", response = "";
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 
 	RoadRunnerGUI() {
 		// Frame configurations
@@ -215,20 +207,13 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 				command = appendTools(command, selected);
 				String temp = jfc.getSelectedFile().getName().substring(0, jfc.getSelectedFile().getName().length() - 5);
 				Runtime run = Runtime.getRuntime();
-<<<<<<< HEAD
 				Process pr = run.exec(new String[]{"rrrun", path, array, noBarrier, command, temp, numThreads});
-=======
-				Process pr = run.exec(new String[]{"rrrun", path, command, temp});
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 				pr.waitFor();
 				BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 				String line = buf.readLine();
 				while (line != null) {
 					System.out.println(line);
-<<<<<<< HEAD
 					jta.append(line + "\n");
-=======
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 					output += line + "\n";
 					line = buf.readLine();
 				}
@@ -317,7 +302,6 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 			response = JOptionPane.showInputDialog("# of threads?");
 			
 			if (response == null) {
-<<<<<<< HEAD
 				jta.append(cb.getText() + " was not entered.\n");
 			}
 			else {
@@ -328,30 +312,15 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
  				}  
   				catch(NumberFormatException nfe) {}  
 			}
-=======
-				// code here
-			}
-			
-			// add whatever you need
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 		}
 		
 		if (ie.getStateChange() == ItemEvent.SELECTED) {
 			jta.append(cb.getText() + " was selected.\n");
-<<<<<<< HEAD
-=======
-		} else {
-			jta.append(cb.getText() + " was unselected.\n");
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 		}
 	}
 
 	public boolean[] getSelected(boolean selected[]) {
-<<<<<<< HEAD
 		for (int i = 0; i < 13; i++) {
-=======
-		for (int i = 0; i < 7; i++) {
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 			if (jcb[i].isSelected()) {
 				selected[i] = true;
 			}
@@ -370,14 +339,11 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 				else if (i == 4) {command += "LS:";}
 				else if (i == 5) {command += "PL:";}
 				else if (i == 6) {command += "RS:";}
-<<<<<<< HEAD
 				else if (i == 7) {array = "-array=COARSE";}
 				else if (i == 8) {array = "-array=FINE";}
 				else if (i == 9) {array = "-array=NONE";}
 				else if (i == 10) {array = "-array=SPECIAL";}	
 				else if (i == 11) {noBarrier = "-nobarrier";}		
-=======
->>>>>>> f1784ca594dff8af9ecade83ced3e34afdde3c02
 			}
 		}
 		
