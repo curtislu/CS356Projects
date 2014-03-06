@@ -207,7 +207,7 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 				command = appendTools(command, selected);
 				String temp = jfc.getSelectedFile().getName().substring(0, jfc.getSelectedFile().getName().length() - 5);
 				Runtime run = Runtime.getRuntime();
-				Process pr = run.exec(new String[]{"rrrun", path, array, noBarrier, command, temp, numThreads});
+				Process pr = run.exec(new String[]{"rrrun", path, array, noBarrier, "-stacks", command, temp, numThreads});
 				pr.waitFor();
 				BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
 				String line = buf.readLine();
