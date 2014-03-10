@@ -4,6 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import javax.swing.*;
+import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,7 +29,7 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 	JMenuItem jmiAbout, jmiDoc, jmiExit, jmiGet, jmiOut, jmiReset, jmiRun, jmiSelect;
 	JPanel jpnl1, jpnl2, jpnl3, jpnlBot, jpnlTop;
 	JScrollPane jsp;
-	JTextArea jta;
+	JEditorPane jta;
 	String command = "-tool=", output = "", path = "-classpath=", response = "", array = "", noBarrier = "", numThreads = "";
 
 	RoadRunnerGUI() {
@@ -167,9 +172,8 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 		// Bottom panel
 		jpnlBot = new JPanel();
 		jpnlBot.setBorder(BorderFactory.createTitledBorder("Console"));
-		jta = new JTextArea();
-		jta.setLineWrap(true);
-		jta.setWrapStyleWord(true);
+		jta = new JEditorPane();
+		jta.setEditable(false);
 		jsp = new JScrollPane(jta);
 		jsp.setPreferredSize(new Dimension(825, 240));
 
@@ -207,19 +211,73 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 				command = appendTools(command, selected);
 				String temp = jfc.getSelectedFile().getName().substring(0, jfc.getSelectedFile().getName().length() - 5);
 				Runtime run = Runtime.getRuntime();
-				Process pr = run.exec(new String[]{"rrrun", path, array, noBarrier, "-stacks", command, temp, numThreads});
+				Process pr = run.exec(new String[]{"rrrun", path, array, noBarrier, "-noxml", "-stacks", command, temp, numThreads});
 				pr.waitFor();
 				BufferedReader buf = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+				jta.setContentType("text/html");
 				String line = buf.readLine();
+				String collectString = "<html>" + line + "<br>";
+				int counterHyper = 0;
 				while (line != null) {
-					System.out.println(line);
-					jta.append(line + "\n");
-					output += line + "\n";
-					line = buf.readLine();
+					String tempTest = "##           Stack";
+					if(line.length() > 17 && line.substring(0,18).equals(tempTest))
+					{
+						counterHyper=1;
+						System.out.println(line);
+						collectString = collectString + line + "<br>";
+						output += line + "\n";
+						line = buf.readLine();
+					}
+					else
+					{
+						if(counterHyper > 0)
+						{
+							if(counterHyper==5)
+							{
+								String replaceHTML = "<a href=file://" + jfc.getCurrentDirectory().toString() + "/" + jfc.getSelectedFile().getName() + ">" + line + "</a>";
+								System.out.println(line);
+								collectString = collectString + replaceHTML + "<br>";
+								output += line + "\n";
+								line = buf.readLine();
+								counterHyper=0;
+							}
+							else
+							{
+								counterHyper += 1;
+								System.out.println(line);
+								collectString = collectString + line + "<br>";
+								output += line + "\n";
+								line = buf.readLine();
+							}
+						}
+						else 
+						{
+							System.out.println(line);
+							collectString = collectString + line + "<br>";
+							output += line + "\n";
+							line = buf.readLine();
+						}
+					}
 				}
+				collectString = collectString + "</html>";
+				jta.setText(collectString);
 			} catch (Exception error) {
 				error.printStackTrace();
 			}
+			jta.addHyperlinkListener(new HyperlinkListener() {
+		            @Override
+		            public void hyperlinkUpdate(HyperlinkEvent hle) {
+		                if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+		                    System.out.println(hle.getURL());
+		                    Desktop desktop = Desktop.getDesktop();
+		                    try {
+		                        desktop.browse(hle.getURL().toURI());
+		                    } catch (Exception ex) {
+		                        ex.printStackTrace();
+		                    }
+		                }
+		            }
+		        });
 		}
 
 		if (comStr.equals("Output File")) {
@@ -238,7 +296,7 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 		}
 
 		if (comStr.equals("Reset GUI")) {
-			for (int i = 0; i < 12; i++) {
+			for (int i = 0; i < 11; i++) {
 				jcb[i].setSelected(false);
 			}
 
@@ -302,7 +360,6 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 			response = JOptionPane.showInputDialog("# of threads?");
 			
 			if (response == null) {
-				jta.append(cb.getText() + " was not entered.\n");
 			}
 			else {
 				try  
@@ -315,7 +372,7 @@ class RoadRunnerGUI implements ActionListener, ItemListener {
 		}
 		
 		if (ie.getStateChange() == ItemEvent.SELECTED) {
-			jta.append(cb.getText() + " was selected.\n");
+			//jta.append(cb.getText() + " was selected.\n");
 		}
 	}
 
